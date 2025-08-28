@@ -43,13 +43,13 @@
 
         @keyframes starTwinkle {
             0% {
-                background-color: #d5d5d5;
+                background-color: #e8e8e8;
             }
             50% {
-                background-color: #707070;
+                background-color: #505050;
             }
             100% {
-                background-color: #d5d5d5;
+                background-color: #e8e8e8;
             }
         }
 
@@ -89,7 +89,7 @@
                     dot.style.animationDelay = animationDelay + 's';
                     
                     // Randomly twinkle some dots
-                    if (Math.random() < 0.08) { // 8% of dots get twinkling
+                    if (Math.random() < 0.15) { // 15% of dots get twinkling
                         dot.classList.add('twinkle');
                     }
                     
@@ -108,37 +108,12 @@
             resizeTimeout = setTimeout(createDotGrid, 250);
         });
 
-        // Add subtle mouse interaction
-        document.addEventListener('mousemove', (e) => {
-            const dots = document.querySelectorAll('.dot');
-            const mouseX = e.clientX;
-            const mouseY = e.clientY;
-            
-            dots.forEach(dot => {
-                const dotRect = dot.getBoundingClientRect();
-                const dotX = dotRect.left + dotRect.width / 2;
-                const dotY = dotRect.top + dotRect.height / 2;
-                
-                const distance = Math.sqrt(
-                    Math.pow(mouseX - dotX, 2) + Math.pow(mouseY - dotY, 2)
-                );
-                
-                // If mouse is close to dot, add subtle effects
-                if (distance < 100) {
-                    const proximity = 1 - (distance / 100);
-                    dot.style.opacity = 0.6 + (proximity * 0.4);
-                    dot.style.transform = `scale(${1 + proximity * 0.3})`;
-                } else {
-                    dot.style.opacity = '';
-                    dot.style.transform = '';
-                }
-            });
-        });
+
 
         // Periodically refresh twinkling for organic feel
         setInterval(() => {
             const dots = document.querySelectorAll('.dot:not(.twinkle)');
-            const randomDots = Array.from(dots).sort(() => 0.5 - Math.random()).slice(0, 3);
+            const randomDots = Array.from(dots).sort(() => 0.5 - Math.random()).slice(0, 6);
             
             randomDots.forEach(dot => {
                 dot.classList.add('twinkle');
@@ -148,7 +123,7 @@
                     dot.classList.remove('twinkle');
                 }, duration);
             });
-        }, 5000);
+        }, 3000);
     </script>
 </body>
 </html>
