@@ -206,6 +206,15 @@
             font-weight: 200;
             line-height: 1.4;
             text-align: left;
+            margin-bottom: 12px;
+        }
+
+        .content-acknowledgements {
+            font-size: 16px;
+            font-weight: 200;
+            line-height: 1.4;
+            color: #777;
+            font-style: italic;
         }
 
         .dot-grid {
@@ -301,6 +310,7 @@
                 <h2 class="content-title" id="contentTitle"></h2>
                 <p class="content-date" id="contentDate"></p>
                 <p class="content-description" id="contentDescription"></p>
+                <p class="content-acknowledgements" id="contentAcknowledgements"></p>
             </div>
         </main>
     </div>
@@ -391,6 +401,7 @@
             const contentTitle = document.getElementById('contentTitle');
             const contentDate = document.getElementById('contentDate');
             const contentDescription = document.getElementById('contentDescription');
+            const contentAcknowledgements = document.getElementById('contentAcknowledgements');
             
             // Update video source
             mainVideo.src = `media/recordings/${videoName}.mp4`;
@@ -401,15 +412,17 @@
                 const response = await fetch(`descriptions/${videoName}.json`);
                 const data = await response.json();
                 
-                // Update title, date, and description
+                // Update title, date, description, and acknowledgements
                 contentTitle.textContent = data.title;
                 contentDate.textContent = data.date;
                 contentDescription.textContent = data.description;
+                contentAcknowledgements.textContent = data.acknowledgements || '';
             } catch (error) {
                 console.error('Error loading content:', error);
                 contentTitle.textContent = videoName;
                 contentDate.textContent = '';
                 contentDescription.textContent = 'Content unavailable';
+                contentAcknowledgements.textContent = '';
             }
             
             // Update active snapshot
