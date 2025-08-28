@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jose's Digital Bullet Journal</title>
+    <title>Jose's Digital Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -14,8 +17,96 @@
         body {
             background-color: #faf9f7;
             min-height: 100vh;
-            overflow: hidden;
             position: relative;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            position: relative;
+            z-index: 10;
+            margin: 24px 24px 48px 24px;
+            display: flex;
+            align-items: flex-start;
+            gap: 32px;
+            min-height: 150px;
+        }
+
+        .profile-picture {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            background-color: #ddd;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            flex-shrink: 0;
+        }
+
+        .header-text {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            font-family: 'DM Sans', sans-serif;
+            color: #333;
+            flex: 1;
+        }
+
+        .name {
+            font-size: 48px;
+            font-weight: 150;
+            line-height: 1.1;
+            margin: 0 0 16px 0;
+        }
+
+        .social-links {
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            align-items: flex-start;
+            width: 200px;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 24px;
+            font-weight: 250;
+            transition: opacity 0.3s ease;
+        }
+
+        .social-link:hover {
+            opacity: 0.7;
+        }
+
+        .social-link.linkedin {
+            color: #0274B3;
+        }
+
+        .social-link.github {
+            color: #000000;
+        }
+
+        .social-link.figma {
+            color: #FF7262;
+        }
+
+        .social-icon {
+            height: 24px;
+            width: auto;
+        }
+
+        .description {
+            font-size: 32px;
+            font-weight: 150;
+            line-height: 1.2;
+            max-width: 100%;
         }
 
         .dot-grid {
@@ -61,6 +152,28 @@
 </head>
 <body>
     <div class="dot-grid" id="dotGrid"></div>
+    
+    <header class="header">
+        <img src="img/profile.jpg" alt="Jose's Profile Picture" class="profile-picture" />
+        <div class="header-text">
+            <h1 class="name">Jose Emilio Regio</h1>
+            <p class="description">I am a PhD student in chemistry at Carnegie Mellon University and I work on<br>designing <strong>visual interfaces for data-driven scientific applications</strong></p>
+        </div>
+        <div class="social-links">
+            <a href="https://www.linkedin.com/in/jose-emilio-regio-252b31178/" target="_blank" class="social-link linkedin">
+                <img src="img/linkedin.png" alt="LinkedIn" class="social-icon" />
+                LinkedIn
+            </a>
+            <a href="https://github.com/jregio" target="_blank" class="social-link github">
+                <img src="img/github.png" alt="GitHub" class="social-icon" />
+                GitHub
+            </a>
+            <a href="https://www.figma.com/@d848426e_93e1_4" target="_blank" class="social-link figma">
+                <img src="img/figma.png" alt="Figma" class="social-icon" />
+                Figma
+            </a>
+        </div>
+    </header>
 
     <script>
         function createDotGrid() {
