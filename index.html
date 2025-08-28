@@ -92,7 +92,7 @@
                     dot.style.animationDelay = animationDelay + 's';
                     
                     // Randomly twinkle some dots
-                    if (Math.random() < 0.15) { // 15% of dots get twinkling
+                    if (Math.random() < 0.06) { // 6% of dots get twinkling
                         dot.classList.add('twinkle');
                     }
                     
@@ -116,7 +116,7 @@
         // Periodically refresh twinkling for organic feel
         setInterval(() => {
             const dots = document.querySelectorAll('.dot:not(.twinkle)');
-            const randomDots = Array.from(dots).sort(() => 0.5 - Math.random()).slice(0, 6);
+            const randomDots = Array.from(dots).sort(() => 0.5 - Math.random()).slice(0, 2);
             
             randomDots.forEach(dot => {
                 dot.classList.add('twinkle');
@@ -126,7 +126,7 @@
                     dot.classList.remove('twinkle');
                 }, duration);
             });
-        }, 3000);
+        }, 4000);
     </script>
 </body>
 </html>
