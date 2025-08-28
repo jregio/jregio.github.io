@@ -38,7 +38,7 @@
         }
 
         .dot.twinkle {
-            animation: starTwinkle 5s ease-in-out infinite;
+            animation: starTwinkle 7s ease-in-out infinite;
         }
 
         @keyframes starTwinkle {
@@ -92,7 +92,7 @@
                     dot.style.animationDelay = animationDelay + 's';
                     
                     // Randomly twinkle some dots
-                    if (Math.random() < 0.06) { // 6% of dots get twinkling
+                    if (Math.random() < 0.005) { // 6% of dots get twinkling
                         dot.classList.add('twinkle');
                     }
                     
@@ -121,7 +121,7 @@
             randomDots.forEach(dot => {
                 dot.classList.add('twinkle');
                 // Random duration for each twinkling session
-                const duration = 3000 + Math.random() * 4000; // 3-7 seconds
+                const duration = 8000 + Math.random() * 5000; // 8-13 seconds
                 setTimeout(() => {
                     dot.classList.remove('twinkle');
                 }, duration);
