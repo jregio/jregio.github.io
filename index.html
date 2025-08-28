@@ -91,10 +91,7 @@
                     const animationDelay = Math.random() * 4;
                     dot.style.animationDelay = animationDelay + 's';
                     
-                    // Randomly twinkle some dots
-                    if (Math.random() < 0.005) { // 6% of dots get twinkling
-                        dot.classList.add('twinkle');
-                    }
+                    // No initial twinkling - will be handled by cycling logic
                     
                     dotGrid.appendChild(dot);
                 }
@@ -113,31 +110,37 @@
 
 
 
-        // Periodically refresh twinkling for organic feel
+        // Simple population-based twinkling system
         setInterval(() => {
-            // Stop some currently twinkling dots to make room for new ones
-            const currentTwinklers = document.querySelectorAll('.dot.twinkle');
-            if (currentTwinklers.length > 0) {
-                const dotsToStop = Array.from(currentTwinklers)
-                    .sort(() => 0.5 - Math.random())
-                    .slice(0, Math.floor(currentTwinklers.length * 0.3)); // Stop 30% of current twinklers
-                dotsToStop.forEach(dot => dot.classList.remove('twinkle'));
-            }
-            
-            // Add new twinkling dots
             const allDots = document.querySelectorAll('.dot');
-            const availableDots = Array.from(allDots).filter(dot => !dot.classList.contains('twinkle'));
-            const randomDots = availableDots.sort(() => 0.5 - Math.random()).slice(0, 3);
             
-            randomDots.forEach(dot => {
-                dot.classList.add('twinkle');
-                // Random duration for each twinkling session
-                const duration = 8000 + Math.random() * 5000; // 8-13 seconds
-                setTimeout(() => {
-                    dot.classList.remove('twinkle');
-                }, duration);
+            allDots.forEach(dot => {
+                // Each dot has a 2% chance to be selected each second
+                if (Math.random() < 0.005) {
+                    // If dot is already twinkling, it continues (no restart)
+                    if (!dot.classList.contains('twinkle')) {
+                        // Ensure dot is in original state before starting
+                        dot.style.backgroundColor = '#a8a8a8';
+                        dot.style.transform = 'scale(1)';
+                        dot.style.animationDelay = '0s';
+                        
+                        // Small delay to ensure reset takes effect
+                        setTimeout(() => {
+                            dot.classList.add('twinkle');
+                        }, 50);
+                        
+                        setTimeout(() => {
+                            dot.classList.remove('twinkle');
+                            // Explicitly reset to original state
+                            dot.style.backgroundColor = '#a8a8a8';
+                            dot.style.transform = 'scale(1)';
+                            // Restore random delay for next time
+                            dot.style.animationDelay = (Math.random() * 4) + 's';
+                        }, 7050); // 7000 + 50ms offset
+                    }
+                }
             });
-        }, 3000);
+        }, 1000); // Check every 1 second
     </script>
 </body>
 </html>
