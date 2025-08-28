@@ -37,26 +37,19 @@
             transition: all 0.3s ease;
         }
 
-        .dot.animate {
-            animation: dotPulse 4s ease-in-out infinite;
+        .dot.twinkle {
+            animation: starTwinkle 3s ease-in-out infinite;
         }
 
-        @keyframes dotPulse {
-            0%, 100% {
-                opacity: 0.6;
-                transform: scale(1);
-            }
-            25% {
-                opacity: 0.9;
-                transform: scale(1.2);
+        @keyframes starTwinkle {
+            0% {
+                background-color: #d5d5d5;
             }
             50% {
-                opacity: 0.4;
-                transform: scale(0.8);
+                background-color: #707070;
             }
-            75% {
-                opacity: 0.8;
-                transform: scale(1.1);
+            100% {
+                background-color: #d5d5d5;
             }
         }
 
@@ -95,9 +88,9 @@
                     const animationDelay = Math.random() * 4;
                     dot.style.animationDelay = animationDelay + 's';
                     
-                    // Randomly animate some dots
-                    if (Math.random() < 0.15) { // 15% of dots get animation
-                        dot.classList.add('animate');
+                    // Randomly twinkle some dots
+                    if (Math.random() < 0.08) { // 8% of dots get twinkling
+                        dot.classList.add('twinkle');
                     }
                     
                     dotGrid.appendChild(dot);
@@ -142,18 +135,20 @@
             });
         });
 
-        // Periodically refresh animations for organic feel
+        // Periodically refresh twinkling for organic feel
         setInterval(() => {
-            const dots = document.querySelectorAll('.dot:not(.animate)');
-            const randomDots = Array.from(dots).sort(() => 0.5 - Math.random()).slice(0, 5);
+            const dots = document.querySelectorAll('.dot:not(.twinkle)');
+            const randomDots = Array.from(dots).sort(() => 0.5 - Math.random()).slice(0, 3);
             
             randomDots.forEach(dot => {
-                dot.classList.add('animate');
+                dot.classList.add('twinkle');
+                // Random duration for each twinkling session
+                const duration = 3000 + Math.random() * 4000; // 3-7 seconds
                 setTimeout(() => {
-                    dot.classList.remove('animate');
-                }, 4000);
+                    dot.classList.remove('twinkle');
+                }, duration);
             });
-        }, 6000);
+        }, 5000);
     </script>
 </body>
 </html>
