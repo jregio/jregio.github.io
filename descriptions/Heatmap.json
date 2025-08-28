@@ -1,5 +1,6 @@
 {
     "title": "Reaction Rate Data",
     "date": "July 2025",
-    "description": "Dynamic heatmap visualization interface for reaction rate data."
+    "description": "Interactive heatmap visualization of reaction rate data.  Users can hover to see corresponding chemical structures and click to compare reaction data rates.  Hovering over the reaction rate value shows the reaction rate plot.",
+    "acknowledgements": "Data was collected by Mitchell Baumer.  Interface was designed in collaboration with Liliana Gallegos."
 }
