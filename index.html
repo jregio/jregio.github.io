@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to Jose's GitHub Pages</title>
+    <title>Jose's Digital Bullet Journal</title>
     <style>
         * {
             margin: 0;
@@ -12,146 +12,152 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-color: #faf9f7;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            overflow: hidden;
+            position: relative;
         }
 
-        .container {
-            text-align: center;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 3rem 2rem;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            width: 90%;
-            backdrop-filter: blur(10px);
+        .dot-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.6;
         }
 
-        h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        .dot {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background-color: #c8c8c8;
+            border-radius: 50%;
+            transition: all 0.3s ease;
         }
 
-        .subtitle {
-            font-size: 1.2rem;
-            color: #666;
-            margin-bottom: 2rem;
-            font-weight: 300;
+        .dot.animate {
+            animation: dotPulse 4s ease-in-out infinite;
         }
 
-        .welcome-text {
-            font-size: 1.1rem;
-            margin-bottom: 2rem;
-            color: #555;
-            line-height: 1.8;
-        }
-
-        .status {
-            background: linear-gradient(45deg, #4CAF50, #45a049);
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 25px;
-            font-weight: 500;
-            display: inline-block;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
-        }
-
-        .links {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .link {
-            display: inline-block;
-            padding: 0.8rem 1.5rem;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            text-decoration: none;
-            border-radius: 25px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            font-weight: 500;
-        }
-
-        .link:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-        }
-
-        .footer {
-            margin-top: 2rem;
-            font-size: 0.9rem;
-            color: #999;
-        }
-
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2rem;
+        @keyframes dotPulse {
+            0%, 100% {
+                opacity: 0.6;
+                transform: scale(1);
             }
-            
-            .container {
-                padding: 2rem 1.5rem;
+            25% {
+                opacity: 0.9;
+                transform: scale(1.2);
             }
-            
-            .links {
-                flex-direction: column;
-                align-items: center;
+            50% {
+                opacity: 0.4;
+                transform: scale(0.8);
             }
+            75% {
+                opacity: 0.8;
+                transform: scale(1.1);
+            }
+        }
+
+        .dot:hover {
+            background-color: #999;
+            transform: scale(1.5);
+            opacity: 1;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Welcome!</h1>
-        <p class="subtitle">Jose's GitHub Pages Site</p>
-        
-        <div class="status">
-            🎉 Site is Live & Running
-        </div>
-        
-        <div class="welcome-text">
-            <p>This is your GitHub Pages website! You can now customize this page to showcase your projects, portfolio, blog, or any content you'd like to share with the world.</p>
-        </div>
-        
-        <div class="links">
-            <a href="https://github.com/jregio" class="link" target="_blank">View GitHub Profile</a>
-            <a href="https://pages.github.com/" class="link" target="_blank">GitHub Pages Docs</a>
-        </div>
-        
-        <div class="footer">
-            <p>Built with ❤️ using GitHub Pages</p>
-            <p>Last updated: <span id="current-date"></span></p>
-        </div>
-    </div>
+    <div class="dot-grid" id="dotGrid"></div>
 
     <script>
-        // Display current date
-        document.getElementById('current-date').textContent = new Date().toLocaleDateString();
-        
-        // Add some subtle animation
-        document.addEventListener('DOMContentLoaded', function() {
-            const container = document.querySelector('.container');
-            container.style.opacity = '0';
-            container.style.transform = 'translateY(20px)';
+        function createDotGrid() {
+            const dotGrid = document.getElementById('dotGrid');
+            const spacing = 25; // Distance between dots in pixels
+            const dotSize = 2;
             
-            setTimeout(() => {
-                container.style.transition = 'all 0.6s ease';
-                container.style.opacity = '1';
-                container.style.transform = 'translateY(0)';
-            }, 100);
+            // Calculate how many dots we need
+            const cols = Math.ceil(window.innerWidth / spacing) + 2;
+            const rows = Math.ceil(window.innerHeight / spacing) + 2;
+            
+            // Clear existing dots
+            dotGrid.innerHTML = '';
+            
+            for (let row = 0; row < rows; row++) {
+                for (let col = 0; col < cols; col++) {
+                    const dot = document.createElement('div');
+                    dot.className = 'dot';
+                    
+                    // Position the dot
+                    const x = col * spacing;
+                    const y = row * spacing;
+                    
+                    dot.style.left = x + 'px';
+                    dot.style.top = y + 'px';
+                    
+                    // Add random animation delay for organic feel
+                    const animationDelay = Math.random() * 4;
+                    dot.style.animationDelay = animationDelay + 's';
+                    
+                    // Randomly animate some dots
+                    if (Math.random() < 0.15) { // 15% of dots get animation
+                        dot.classList.add('animate');
+                    }
+                    
+                    dotGrid.appendChild(dot);
+                }
+            }
+        }
+
+        // Create initial grid
+        createDotGrid();
+        
+        // Recreate grid on window resize
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(createDotGrid, 250);
         });
+
+        // Add subtle mouse interaction
+        document.addEventListener('mousemove', (e) => {
+            const dots = document.querySelectorAll('.dot');
+            const mouseX = e.clientX;
+            const mouseY = e.clientY;
+            
+            dots.forEach(dot => {
+                const dotRect = dot.getBoundingClientRect();
+                const dotX = dotRect.left + dotRect.width / 2;
+                const dotY = dotRect.top + dotRect.height / 2;
+                
+                const distance = Math.sqrt(
+                    Math.pow(mouseX - dotX, 2) + Math.pow(mouseY - dotY, 2)
+                );
+                
+                // If mouse is close to dot, add subtle effects
+                if (distance < 100) {
+                    const proximity = 1 - (distance / 100);
+                    dot.style.opacity = 0.6 + (proximity * 0.4);
+                    dot.style.transform = `scale(${1 + proximity * 0.3})`;
+                } else {
+                    dot.style.opacity = '';
+                    dot.style.transform = '';
+                }
+            });
+        });
+
+        // Periodically refresh animations for organic feel
+        setInterval(() => {
+            const dots = document.querySelectorAll('.dot:not(.animate)');
+            const randomDots = Array.from(dots).sort(() => 0.5 - Math.random()).slice(0, 5);
+            
+            randomDots.forEach(dot => {
+                dot.classList.add('animate');
+                setTimeout(() => {
+                    dot.classList.remove('animate');
+                }, 4000);
+            });
+        }, 6000);
     </script>
 </body>
 </html>
