@@ -25,7 +25,7 @@
         .header {
             position: relative;
             z-index: 10;
-            margin: 24px 24px 48px 24px;
+            margin: 24px 24px 72px 24px;
             display: flex;
             align-items: flex-start;
             gap: 32px;
@@ -71,14 +71,26 @@
         }
 
         .social-link {
-            display: flex;
+            display: grid;
+            grid-template-columns: 32px 1fr;
+            gap: 12px;
+            width: 100%;
             align-items: center;
-            gap: 8px;
             text-decoration: none;
             font-family: 'DM Sans', sans-serif;
             font-size: 24px;
             font-weight: 250;
             transition: opacity 0.3s ease;
+        }
+
+        .social-icon {
+            height: 24px;
+            width: auto;
+            justify-self: center;
+        }
+
+        .social-text {
+            justify-self: start;
         }
 
         .social-link:hover {
@@ -97,16 +109,103 @@
             color: #FF7262;
         }
 
-        .social-icon {
-            height: 24px;
-            width: auto;
-        }
+
 
         .description {
             font-size: 32px;
             font-weight: 150;
             line-height: 1.2;
             max-width: 100%;
+        }
+
+        .page-container {
+            margin: 0 24px 48px 24px;
+            display: flex;
+            gap: 32px;
+            align-items: flex-start;
+            position: relative;
+            z-index: 10;
+        }
+
+        .video-snapshots {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 200px;
+            flex-shrink: 0;
+        }
+
+        .snapshot {
+            width: 200px;
+            height: 112px;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .snapshot:hover {
+            transform: translateX(4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .snapshot.active {
+            transform: translateX(2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+            border: 2px solid #0274B3;
+        }
+
+        .snapshot img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .video-container {
+            flex: 4;
+        }
+
+        .main-video {
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+        }
+
+        .content-info {
+            flex: 1;
+            font-family: 'DM Sans', sans-serif;
+            color: #333;
+            padding-left: 16px;
+        }
+
+        .content-title {
+            font-size: 24px;
+            font-weight: 300;
+            margin-bottom: 6px;
+            line-height: 1.2;
+        }
+
+        .content-date {
+            font-size: 18px;
+            font-weight: 200;
+            color: #666;
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+
+        .content-description {
+            font-size: 24px;
+            font-weight: 200;
+            line-height: 1.4;
+            text-align: justify;
         }
 
         .dot-grid {
@@ -154,26 +253,57 @@
     <div class="dot-grid" id="dotGrid"></div>
     
     <header class="header">
-        <img src="img/profile.jpg" alt="Jose's Profile Picture" class="profile-picture" />
+        <img src="media/profile/profile.jpg" alt="Jose's Profile Picture" class="profile-picture" />
         <div class="header-text">
             <h1 class="name">Jose Emilio Regio</h1>
             <p class="description">I am a PhD student in chemistry at Carnegie Mellon University and I work on<br>designing <strong>visual interfaces for data-driven scientific applications</strong></p>
         </div>
         <div class="social-links">
             <a href="https://www.linkedin.com/in/jose-emilio-regio-252b31178/" target="_blank" class="social-link linkedin">
-                <img src="img/linkedin.png" alt="LinkedIn" class="social-icon" />
-                LinkedIn
+                <img src="media/logos/linkedin.png" alt="LinkedIn" class="social-icon" />
+                <span class="social-text">LinkedIn</span>
             </a>
             <a href="https://github.com/jregio" target="_blank" class="social-link github">
-                <img src="img/github.png" alt="GitHub" class="social-icon" />
-                GitHub
+                <img src="media/logos/github.png" alt="GitHub" class="social-icon" />
+                <span class="social-text">GitHub</span>
             </a>
             <a href="https://www.figma.com/@d848426e_93e1_4" target="_blank" class="social-link figma">
-                <img src="img/figma.png" alt="Figma" class="social-icon" />
-                Figma
+                <img src="media/logos/figma.png" alt="Figma" class="social-icon" />
+                <span class="social-text">Figma</span>
             </a>
         </div>
     </header>
+
+    <div class="page-container">
+        <section class="video-snapshots">
+            <div class="snapshot active" data-video="Reactor">
+                <img src="media/thumbnails/reactor-thumb.jpg" alt="Reactor" />
+            </div>
+            <div class="snapshot" data-video="Flotero">
+                <img src="media/thumbnails/flotero-thumb.jpg" alt="Flotero" />
+            </div>
+            <div class="snapshot" data-video="CoDECS">
+                <img src="media/thumbnails/codecs-thumb.jpg" alt="CoDECS" />
+            </div>
+            <div class="snapshot" data-video="Heatmap">
+                <img src="media/thumbnails/heatmap-thumb.jpg" alt="Heatmap" />
+            </div>
+        </section>
+
+        <main class="main-content">
+            <div class="video-container">
+                <video class="main-video" controls autoplay muted loop id="mainVideo">
+                    <source src="media/recordings/Reactor.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <div class="content-info">
+                <h2 class="content-title" id="contentTitle"></h2>
+                <p class="content-date" id="contentDate"></p>
+                <p class="content-description" id="contentDescription"></p>
+            </div>
+        </main>
+    </div>
 
     <script>
         function createDotGrid() {
@@ -254,6 +384,60 @@
                 }
             });
         }, 1000); // Check every 1 second
+
+        // Video switching functionality
+        async function switchVideo(videoName) {
+            const mainVideo = document.getElementById('mainVideo');
+            const contentTitle = document.getElementById('contentTitle');
+            const contentDate = document.getElementById('contentDate');
+            const contentDescription = document.getElementById('contentDescription');
+            
+            // Update video source
+            mainVideo.src = `media/recordings/${videoName}.mp4`;
+            mainVideo.load();
+            
+            try {
+                // Load content from JSON file
+                const response = await fetch(`descriptions/${videoName}.json`);
+                const data = await response.json();
+                
+                // Update title, date, and description
+                contentTitle.textContent = data.title;
+                contentDate.textContent = data.date;
+                contentDescription.textContent = data.description;
+            } catch (error) {
+                console.error('Error loading content:', error);
+                contentTitle.textContent = videoName;
+                contentDate.textContent = '';
+                contentDescription.textContent = 'Content unavailable';
+            }
+            
+            // Update active snapshot
+            document.querySelectorAll('.snapshot').forEach(snapshot => {
+                snapshot.classList.remove('active');
+            });
+            document.querySelector(`[data-video="${videoName}"]`).classList.add('active');
+        }
+
+        // Add click listeners to snapshots and initialize with first video
+        document.addEventListener('DOMContentLoaded', function() {
+            const snapshots = document.querySelectorAll('.snapshot');
+            
+            // Initialize with the first (active) snapshot's data
+            const activeSnapshot = document.querySelector('.snapshot.active');
+            if (activeSnapshot) {
+                const videoName = activeSnapshot.dataset.video;
+                switchVideo(videoName);
+            }
+            
+            // Add click listeners
+            snapshots.forEach(snapshot => {
+                snapshot.addEventListener('click', function() {
+                    const videoName = this.dataset.video;
+                    switchVideo(videoName);
+                });
+            });
+        });
     </script>
 </body>
 </html>

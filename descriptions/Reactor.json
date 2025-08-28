@@ -1,0 +1,5 @@
+{
+    "title": "Reactor Visualization",
+    "date": "August 2025",
+    "description": "3D visualization of a reactor for amide coupling reaction.  Individual meshes were loaded as separate STL files and then assembled using the SolidWorks assembly file.  Reactor was designed and built by M. Baumer."
+}
