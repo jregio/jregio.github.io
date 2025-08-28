@@ -7,10 +7,6 @@
 ehthumbs.db
 Thumbs.db
 
-# Large video files (over 100MB)
-Recordings/ATRP.mp4
-Recordings/CoDECS.mp4
-
 # Backup files
 *.bak
 *.tmp
