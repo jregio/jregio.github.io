@@ -130,19 +130,121 @@
         .video-snapshots {
             display: flex;
             flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            width: 240px; /* Increased width to prevent thumbnail clipping */
+            flex-shrink: 0;
+            position: relative;
+            height: 580px; /* Reduced height to fit better in viewport */
+            overflow: visible; /* Let buttons be visible outside */
+            background: transparent; /* Ensure no background */
+        }
+
+        .snapshots-viewport {
+            height: 520px; /* Height for 4 thumbnails + breathing room: 508px + 10px */
+            width: 300px; /* Match the container width to prevent clipping */
+            overflow: hidden; /* This creates the window effect for thumbnails */
+            position: relative;
+            margin: 0px 0; /* Reduced space for buttons above and below */
+            background: transparent; /* Ensure no gradient background */
+        }
+
+        .snapshots-container {
+            display: flex;
+            flex-direction: column;
             gap: 20px;
+            position: relative;
+            transition: transform 0.3s ease;
             width: 200px;
             flex-shrink: 0;
+            z-index: 1; /* Lower than buttons */
+            margin: 0 auto; /* Center within the larger container */
+            background: transparent; /* Ensure no background */
+        }
+
+        .button-overlay-top,
+        .button-overlay-bottom {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 36px;
+            background: transparent;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none; /* Allow clicks to pass through except on button */
+        }
+
+        .button-overlay-top {
+            top: -40px; /* Position at top of window */
+        }
+
+        .button-overlay-bottom {
+            bottom: 25px; /* Position at bottom of window */
+        }
+
+        .nav-arrow {
+            background: #333;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: white;
+            font-size: 0;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            position: relative;
+            z-index: 15; /* Higher than overlay */
+            pointer-events: auto; /* Ensure button can be clicked */
+        }
+
+        .nav-arrow img {
+            filter: brightness(0) invert(1); /* Make SVG white */
+            transition: inherit;
+        }
+
+        .nav-arrow:hover {
+            background: #000;
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-arrow:active {
+            transform: scale(0.95);
+        }
+
+        .nav-arrow:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-arrow:disabled:hover {
+            background: #333;
+            transform: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         }
 
         .snapshot {
             width: 200px;
             height: 112px;
+            min-width: 200px;
+            min-height: 112px;
+            max-width: 200px;
+            max-height: 112px;
             border-radius: 8px;
             overflow: hidden;
             cursor: pointer;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            flex-shrink: 0;
         }
 
         .snapshot:hover {
@@ -323,9 +425,35 @@
             .video-snapshots {
                 flex-direction: row;
                 width: 100%;
-                overflow-x: auto;
                 gap: 12px;
+                align-items: center;
+                justify-content: flex-start;
+                overflow-x: auto;
                 padding-bottom: 8px;
+            }
+            
+            .snapshots-viewport {
+                height: auto;
+                overflow: visible;
+                margin: 0;
+            }
+            
+            .snapshots-container {
+                flex-direction: row;
+                height: auto;
+                overflow-x: auto;
+                overflow-y: visible;
+                gap: 12px;
+                flex: 1;
+            }
+            
+            .nav-arrow {
+                display: none;
+            }
+            
+            .button-overlay-top,
+            .button-overlay-bottom {
+                display: none;
             }
             
             .snapshot {
@@ -460,6 +588,31 @@
             .video-snapshots {
                 flex-direction: row;
                 gap: 8px;
+                align-items: center;
+            }
+            
+            .snapshots-viewport {
+                height: auto;
+                overflow: visible;
+                margin: 0;
+            }
+            
+            .snapshots-container {
+                flex-direction: row;
+                height: auto;
+                overflow-x: auto;
+                overflow-y: visible;
+                gap: 8px;
+                flex: 1;
+            }
+            
+            .nav-arrow {
+                display: none;
+            }
+            
+            .button-overlay-top,
+            .button-overlay-bottom {
+                display: none;
             }
             
             .snapshot {
@@ -518,17 +671,39 @@
 
     <div class="page-container">
         <section class="video-snapshots">
-            <div class="snapshot active" data-video="Reactor">
-                <img src="media/thumbnails/reactor-thumb.jpg" alt="Reactor" />
+            <div class="button-overlay-top">
+                <button class="nav-arrow nav-arrow-up" id="navArrowUp">
+                    <img src="media/svg/arrow-down-svgrepo-com.svg" alt="Up Arrow" width="16" height="16" style="transform: rotate(180deg);" />
+                </button>
             </div>
-            <div class="snapshot" data-video="Flotero">
-                <img src="media/thumbnails/flotero-thumb.jpg" alt="Flotero" />
+            
+            <div class="snapshots-viewport">
+                <div class="snapshots-container" id="snapshotsContainer">
+                    <div class="snapshot active" data-video="Reactor">
+                        <img src="media/thumbnails/reactor-thumb.jpg" alt="Reactor" />
+                    </div>
+                    <div class="snapshot" data-video="Flotero">
+                        <img src="media/thumbnails/flotero-thumb.jpg" alt="Flotero" />
+                    </div>
+                    <div class="snapshot" data-video="ATRP">
+                        <img src="media/thumbnails/atrp-thumb.jpg" alt="ATRP" />
+                    </div>
+                    <div class="snapshot" data-video="Heatmap">
+                        <img src="media/thumbnails/heatmap-thumb.jpg" alt="Heatmap" />
+                    </div>
+                    <div class="snapshot" data-video="CoDECS">
+                        <img src="media/thumbnails/codecs-thumb.jpg" alt="CoDECS" />
+                    </div>
+                    <div class="snapshot" data-video="PlatOS">
+                        <img src="media/thumbnails/platos-thumb.jpg" alt="PlatOS" />
+                    </div>
+                </div>
             </div>
-            <div class="snapshot" data-video="CoDECS">
-                <img src="media/thumbnails/codecs-thumb.jpg" alt="CoDECS" />
-            </div>
-            <div class="snapshot" data-video="Heatmap">
-                <img src="media/thumbnails/heatmap-thumb.jpg" alt="Heatmap" />
+            
+            <div class="button-overlay-bottom">
+                <button class="nav-arrow nav-arrow-down" id="navArrowDown">
+                    <img src="media/svg/arrow-down-svgrepo-com.svg" alt="Down Arrow" width="16" height="16" />
+                </button>
             </div>
         </section>
 
@@ -628,6 +803,50 @@
             });
         }, 1000); // Check every 1 second
 
+        // Dynamic thumbnail navigation
+        let scrollPosition = 0;
+        const visibleThumbnails = 4; // Number of thumbnails visible at once
+        
+        function initThumbnailNavigation() {
+            const upArrow = document.getElementById('navArrowUp');
+            const downArrow = document.getElementById('navArrowDown');
+            const container = document.getElementById('snapshotsContainer');
+            const snapshots = document.querySelectorAll('.snapshot');
+            
+            // Calculate maximum scroll position dynamically
+            const maxScrollPosition = Math.max(0, snapshots.length - visibleThumbnails);
+            
+            // Simple scroll up (show earlier thumbnails)
+            upArrow.addEventListener('click', () => {
+                if (scrollPosition > 0) {
+                    scrollPosition--;
+                    const translateY = -scrollPosition * 132; // 112px thumbnail + 20px gap
+                    container.style.transform = `translateY(${translateY}px)`;
+                    updateArrows();
+                }
+            });
+            
+            // Simple scroll down (show later thumbnails)
+            downArrow.addEventListener('click', () => {
+                if (scrollPosition < maxScrollPosition) {
+                    scrollPosition++;
+                    const translateY = -scrollPosition * 132; // 112px thumbnail + 20px gap
+                    container.style.transform = `translateY(${translateY}px)`;
+                    updateArrows();
+                }
+            });
+            
+            updateArrows();
+            
+            function updateArrows() {
+                const snapshots = document.querySelectorAll('.snapshot');
+                const maxScrollPosition = Math.max(0, snapshots.length - visibleThumbnails);
+                
+                upArrow.disabled = scrollPosition === 0;
+                downArrow.disabled = scrollPosition >= maxScrollPosition;
+            }
+        }
+
         // Video switching functionality
         async function switchVideo(videoName) {
             const mainVideo = document.getElementById('mainVideo');
@@ -667,6 +886,9 @@
 
         // Add click listeners to snapshots and initialize with first video
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize thumbnail navigation
+            initThumbnailNavigation();
+            
             const snapshots = document.querySelectorAll('.snapshot');
             
             // Initialize with the first (active) snapshot's data
