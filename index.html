@@ -422,38 +422,39 @@
                 gap: 24px;
             }
             
+            /* Override desktop navigation for mobile */
             .video-snapshots {
-                flex-direction: row;
-                width: 100%;
-                gap: 12px;
-                align-items: center;
-                justify-content: flex-start;
-                overflow-x: auto;
-                padding-bottom: 8px;
-            }
-            
-            .snapshots-viewport {
-                height: auto;
-                overflow: visible;
-                margin: 0;
-            }
-            
-            .snapshots-container {
-                flex-direction: row;
-                height: auto;
+                flex-direction: row !important;
+                width: 100% !important;
+                height: auto !important;
                 overflow-x: auto;
                 overflow-y: visible;
                 gap: 12px;
-                flex: 1;
+                padding-bottom: 8px;
+                background: transparent !important;
             }
             
-            .nav-arrow {
-                display: none;
+            .snapshots-viewport {
+                display: none; /* Hide the desktop viewport wrapper */
             }
             
+            .snapshots-container {
+                display: flex !important;
+                flex-direction: row !important;
+                height: auto !important;
+                width: auto !important;
+                overflow: visible !important;
+                gap: 12px;
+                margin: 0 !important;
+                background: transparent !important;
+                transform: none !important; /* Reset any desktop transforms */
+                transition: none !important;
+            }
+            
+            .nav-arrow,
             .button-overlay-top,
             .button-overlay-bottom {
-                display: none;
+                display: none !important;
             }
             
             .snapshot {
@@ -585,34 +586,37 @@
                 gap: 16px;
             }
             
+            /* Override desktop navigation for landscape mobile */
             .video-snapshots {
-                flex-direction: row;
+                flex-direction: row !important;
+                height: auto !important;
+                width: 100% !important;
                 gap: 8px;
-                align-items: center;
+                overflow-x: auto;
+                background: transparent !important;
             }
             
             .snapshots-viewport {
-                height: auto;
-                overflow: visible;
-                margin: 0;
+                display: none; /* Hide the desktop viewport wrapper */
             }
             
             .snapshots-container {
-                flex-direction: row;
-                height: auto;
-                overflow-x: auto;
-                overflow-y: visible;
+                display: flex !important;
+                flex-direction: row !important;
+                height: auto !important;
+                overflow: visible !important;
                 gap: 8px;
+                margin: 0 !important;
+                background: transparent !important;
+                transform: none !important;
+                transition: none !important;
                 flex: 1;
             }
             
-            .nav-arrow {
-                display: none;
-            }
-            
+            .nav-arrow,
             .button-overlay-top,
             .button-overlay-bottom {
-                display: none;
+                display: none !important;
             }
             
             .snapshot {
@@ -808,6 +812,15 @@
         const visibleThumbnails = 4; // Number of thumbnails visible at once
         
         function initThumbnailNavigation() {
+            // Check if we're on mobile (simple check)
+            const isMobile = window.innerWidth <= 768;
+            
+            if (isMobile) {
+                // On mobile, move thumbnails to be direct children of video-snapshots
+                setupMobileLayout();
+                return; // Exit early, no navigation needed on mobile
+            }
+            
             const upArrow = document.getElementById('navArrowUp');
             const downArrow = document.getElementById('navArrowDown');
             const container = document.getElementById('snapshotsContainer');
@@ -845,6 +858,17 @@
                 upArrow.disabled = scrollPosition === 0;
                 downArrow.disabled = scrollPosition >= maxScrollPosition;
             }
+        }
+        
+        function setupMobileLayout() {
+            const videoSnapshots = document.querySelector('.video-snapshots');
+            const snapshotsContainer = document.querySelector('.snapshots-container');
+            const snapshots = snapshotsContainer.querySelectorAll('.snapshot');
+            
+            // Move snapshots to be direct children of video-snapshots
+            snapshots.forEach(snapshot => {
+                videoSnapshots.appendChild(snapshot);
+            });
         }
 
         // Video switching functionality

@@ -1,5 +1,5 @@
 {
-    "name": "ATRP",
+    "title": "ATRP",
     "date": "July 2025",
     "description": "Frontend interface for LLM-powered search engine of an annotated corpus of ATRP documents from the Matyjaszewski Polymer Group.",
     "acknowledgements": "Annotated corpus and backend-LLM search was developed by Rushik Radadiya."
