@@ -713,7 +713,7 @@
 
         <main class="main-content">
             <div class="video-container">
-                <video class="main-video" controls autoplay muted loop id="mainVideo">
+                <video class="main-video" controls autoplay muted loop preload="auto" id="mainVideo">
                     <source src="media/recordings/Reactor.mp4" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
@@ -871,7 +871,7 @@
             });
         }
 
-        // Video switching functionality
+        // Video switching functionality with simplified Safari handling
         async function switchVideo(videoName) {
             const mainVideo = document.getElementById('mainVideo');
             const contentTitle = document.getElementById('contentTitle');
@@ -879,8 +879,13 @@
             const contentDescription = document.getElementById('contentDescription');
             const contentAcknowledgements = document.getElementById('contentAcknowledgements');
             
+            // Pause current video before switching
+            mainVideo.pause();
+            
             // Update video source
             mainVideo.src = `media/recordings/${videoName}.mp4`;
+            
+            // Simple load without complex retry logic
             mainVideo.load();
             
             try {
@@ -908,8 +913,38 @@
             document.querySelector(`[data-video="${videoName}"]`).classList.add('active');
         }
 
+        // Safari detection utility
+        function isSafari() {
+            return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+        }
+        
+        // Simplified Safari video support - monitoring only, no auto-recovery
+        function initSafariVideoSupport() {
+            const mainVideo = document.getElementById('mainVideo');
+            
+            if (isSafari()) {
+                // Safari-specific: Add event listeners for monitoring only
+                mainVideo.addEventListener('loadstart', () => {
+                    console.log('Safari: Video load started');
+                });
+                
+                mainVideo.addEventListener('canplaythrough', () => {
+                    console.log('Safari: Video can play through');
+                });
+                
+                mainVideo.addEventListener('waiting', () => {
+                    console.log('Safari: Video waiting for data');
+                });
+                
+                // Remove problematic auto-recovery that was causing infinite loops
+            }
+        }
+
         // Add click listeners to snapshots and initialize with first video
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Safari-specific video support
+            initSafariVideoSupport();
+            
             // Initialize thumbnail navigation
             initThumbnailNavigation();
             
