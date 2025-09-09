@@ -938,10 +938,13 @@
                 initPageVisibilityFix(mainVideo);
                 
                 mainVideo.addEventListener('stalled', () => {
-                    console.log('Safari: Video stalled, attempting recovery...');
-                    // Force a small seek to recover from stall
-                    if (mainVideo.currentTime > 0.1) {
-                        mainVideo.currentTime = mainVideo.currentTime - 0.1;
+                    console.log('Safari: Video stalled, attempting instant recovery...');
+                    // Instant micro-seek recovery (no reload needed)
+                    const currentTime = mainVideo.currentTime;
+                    if (currentTime > 0.5) {
+                        mainVideo.currentTime = currentTime - 0.1;
+                    } else if (currentTime < mainVideo.duration - 0.5) {
+                        mainVideo.currentTime = currentTime + 0.1;
                     }
                 });
                 
@@ -1003,26 +1006,39 @@
             // Listen for visibility changes
             document.addEventListener('visibilitychange', handleVisibilityChange);
             
-            // Additional Safari-specific workaround: periodic check
+            // Additional Safari-specific workaround: faster stall detection
             if (isSafari()) {
+                let lastCurrentTime = 0;
+                let stallCount = 0;
+                
                 visibilityCheckInterval = setInterval(() => {
                     if (!document.hidden && !video.paused && video.readyState > 0) {
-                        // Check if video has stalled despite not being paused
                         const currentTime = video.currentTime;
-                        setTimeout(() => {
-                            if (video.currentTime === currentTime && !video.paused) {
-                                console.log('Video appears stalled, forcing refresh');
-                                const wasCurrentTime = video.currentTime;
-                                video.load();
-                                video.addEventListener('loadeddata', function onLoaded() {
-                                    video.removeEventListener('loadeddata', onLoaded);
-                                    video.currentTime = wasCurrentTime;
-                                    video.play().catch(e => console.log('Resume play failed:', e));
-                                }, { once: true });
+                        
+                        // Check if video time hasn't advanced
+                        if (currentTime === lastCurrentTime && currentTime > 0) {
+                            stallCount++;
+                            
+                            // Only recover after 2 consecutive stalls (to avoid false positives)
+                            if (stallCount >= 2) {
+                                console.log('Video stalled, attempting instant recovery');
+                                
+                                // Try micro-seek first (fastest recovery)
+                                if (currentTime > 0.5) {
+                                    video.currentTime = currentTime - 0.1;
+                                } else {
+                                    video.currentTime = currentTime + 0.1;
+                                }
+                                
+                                stallCount = 0; // Reset counter
                             }
-                        }, 1000);
+                        } else {
+                            stallCount = 0; // Reset if video is progressing
+                        }
+                        
+                        lastCurrentTime = currentTime;
                     }
-                }, 5000); // Check every 5 seconds
+                }, 500); // Check every 500ms for faster detection
             }
         }
 
