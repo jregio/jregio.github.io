@@ -916,7 +916,7 @@
             return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
         }
         
-        // Cross-browser video support with Safari optimization
+        // Cross-browser video support with Safari tab-switching fix
         function initVideoSupport() {
             const mainVideo = document.getElementById('mainVideo');
             const isGitHubPages = window.location.hostname.includes('github.io');
@@ -931,11 +931,26 @@
             // Safari-specific optimizations for GitHub Pages
             if (browserInfo.safari && isGitHubPages) {
                 console.log('Applying Safari + GitHub Pages optimizations');
-                // Only change preload for Safari on GitHub Pages
-                mainVideo.preload = 'metadata';
+                // Use more conservative preload for Safari on GitHub Pages
+                mainVideo.preload = 'none';
+                
+                // Implement Page Visibility API fix for tab switching issue
+                initPageVisibilityFix(mainVideo);
                 
                 mainVideo.addEventListener('stalled', () => {
-                    console.log('Safari: Video stalled (normal for large files on GitHub Pages)');
+                    console.log('Safari: Video stalled, attempting recovery...');
+                    // Force a small seek to recover from stall
+                    if (mainVideo.currentTime > 0.1) {
+                        mainVideo.currentTime = mainVideo.currentTime - 0.1;
+                    }
+                });
+                
+                mainVideo.addEventListener('suspend', () => {
+                    console.log('Safari: Video loading suspended');
+                });
+                
+                mainVideo.addEventListener('waiting', () => {
+                    console.log('Safari: Video waiting for data');
                 });
             }
             
@@ -947,6 +962,68 @@
             mainVideo.addEventListener('canplaythrough', () => {
                 console.log('Video can play through');
             });
+            
+            mainVideo.addEventListener('pause', () => {
+                console.log('Video paused');
+            });
+            
+            mainVideo.addEventListener('play', () => {
+                console.log('Video playing');
+            });
+        }
+        
+        // Page Visibility API fix for Safari tab switching issues
+        function initPageVisibilityFix(video) {
+            let wasPlayingBeforeHidden = false;
+            let visibilityCheckInterval;
+            
+            function handleVisibilityChange() {
+                if (document.hidden) {
+                    console.log('Page hidden - storing video state');
+                    wasPlayingBeforeHidden = !video.paused;
+                    // Don't pause the video, let it continue in background
+                } else {
+                    console.log('Page visible - restoring video state');
+                    if (wasPlayingBeforeHidden) {
+                        setTimeout(() => {
+                            console.log('Attempting to resume video after visibility change');
+                            if (video.paused) {
+                                video.play().catch(e => console.log('Play failed:', e));
+                            }
+                            // Force a small buffer refresh
+                            if (video.readyState < 3) {
+                                console.log('Video not ready, forcing load');
+                                video.load();
+                            }
+                        }, 100);
+                    }
+                }
+            }
+            
+            // Listen for visibility changes
+            document.addEventListener('visibilitychange', handleVisibilityChange);
+            
+            // Additional Safari-specific workaround: periodic check
+            if (isSafari()) {
+                visibilityCheckInterval = setInterval(() => {
+                    if (!document.hidden && !video.paused && video.readyState > 0) {
+                        // Check if video has stalled despite not being paused
+                        const currentTime = video.currentTime;
+                        setTimeout(() => {
+                            if (video.currentTime === currentTime && !video.paused) {
+                                console.log('Video appears stalled, forcing refresh');
+                                const wasCurrentTime = video.currentTime;
+                                video.load();
+                                video.addEventListener('loadeddata', function onLoaded() {
+                                    video.removeEventListener('loadeddata', onLoaded);
+                                    video.currentTime = wasCurrentTime;
+                                    video.play().catch(e => console.log('Resume play failed:', e));
+                                }, { once: true });
+                            }
+                        }, 1000);
+                    }
+                }, 5000); // Check every 5 seconds
+            }
         }
 
         // Add click listeners to snapshots and initialize with first video
